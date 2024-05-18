@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>ChtrrrrrrrWriting</title>
+    <link rel="icon" href="icon.png" type="image/png">
+    <!-- 引入 Font Awesome ，有一些好用的图标-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        /*卡片和header*/
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: rgb(244, 246, 249);
+        }
+        .header {
+            background-color: #fff;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            position: fixed;
+            width: 100%;
+            height: 10%;
+            top: 5px;
+            left: 5px;
+            right: 5px;
+            z-index: 10;
+            border-radius: 8px; /* 设置圆角 */
+        }
+        .header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+        }
+        .header a {
+            text-decoration: none;
+            color: #333;
+            font-size: 16px;
+        }
+        .header .logo {
+            font-weight: bold;
+        }
+        .article-card {
+            width: 98%; 
+            background-color: #fff;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+        .article-title {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .article-author {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 15px;
+        }
+        .article-actions {
+            display: flex;
+            align-items: center;
+            margin-top: 15px;
+        }
+        .article-actions button {
+            background-color: #f0f0f0;
+            border: none;
+            padding: 8px 15px;
+            margin-right: 10px;
+            border-radius: 20px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .article-actions button:hover {
+            background-color: #e0e0e0;
+        }
+        .article-actions .count {
+            margin-left: 5px;
+            font-size: 14px;
+        }
+        .read-more {
+            display: block;
+            margin-top: 15px;
+            text-align: center;
+            cursor: pointer;
+            color: #1E90FF;
+            border: 1px solid #1E90FF;
+            padding: 8px 15px;
+            border-radius: 20px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .read-more:hover {
+            background-color: #1E90FF;
+            color: white;
+        }
+        .content {
+            display: none;
+            margin-top: 15px;
+        }
+        /*Github项目按钮*/
+        a.github-link {
+        display: inline-flex;
+        align-items: center;
+        color: #6e5494;
+        text-decoration: none;
+        }  
+        a.github-link:hover {
+            text-decoration: underline;
+        }
+        .github-link .fab {
+            margin-right: 8px; /* 与文本保持一定间隔 */
+        }
+        /*侧栏和主栏*/      
+        .main-content, .sidebar {/* 侧边栏和主内容容器 */
+            box-sizing: border-box;
+            padding: 20px;
+        }
+        .main-content {/* 主内容区域 */
+            width: 70%;
+            margin-bottom: 1%;
+            float: left;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            background-color: rgba(255, 255, 255, 0.642); /* RGBA 白色半透明背景 */
+            border-radius: 8px; /* 设置圆角 */
+            margin-top: 7%;
+            margin-left: 2%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column; /* 纵向排列 */
+        }
+        .sidebar {/* 侧边栏 */
+            width: 25%;
+            float: right;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            background-color: rgba(255, 255, 255, 0.642); /* RGBA 白色半透明背景 */
+            border-radius: 8px; /* 设置圆角 */
+            top: 13%;
+            right: 2%;
+            position: fixed;
+        }
+        .clearfix::after {/* 清除浮动 */
+            content: "";
+            display: table;
+            clear: both;
+        }
+        body::after { /* 底部清除浮动 */
+            content: "";
+            display: table;
+            clear: both;
+        }
+        /*平滑滚动*/
+        html {
+         scroll-behavior: smooth; /* 平滑滚动 */
+        }
+        /*返回顶部按钮*/
+        .back-to-top, .scroll-to-bottom {/* 按钮基础样式 */
+            position: fixed;
+            bottom: 20px; /* 根据需要调整按钮距离底部的距离 */
+            right: 20px; /* 根据需要调整按钮距离右侧的距离 */
+            background-color: #1E90FF; /* 按钮背景颜色 */
+            color: white;
+            border: none;
+            border-radius: 50%; /* 圆形按钮 */
+            width: 50px; /* 按钮宽度 */
+            height: 50px; /* 按钮高度 */
+            text-align: center;
+            font-size: 20px;
+            cursor: pointer;
+            display: none; /* 初始时不显示 */
+            z-index: 100;
+        }
+        .back-to-top:hover, .scroll-to-bottom:hover {/* 按钮悬浮效果 */
+            background-color: #0b5ed7;
+        }
+        .back-to-top {/* 返回顶部按钮 */
+            bottom: 80px; /* 与到达底部按钮间隔开 */
+        }
+        @keyframes slideUp {/* 动画效果 */
+          from {
+              transform: scale(0.5); /* 从0.5倍开始，即按钮的一半大小 */
+              opacity: 0;
+          }
+          to {
+              transform: scale(1); /* 到1倍，即完整大小 */
+              opacity: 1;
+          }
+        }
+        .back-to-top {/* 应用动画 */
+            animation: slideUp 0.5s ease-in-out;
+        }
+        /* 隐藏动画的CSS类 */
+@keyframes fadeOutAndScaleDown {
+    to {
+        opacity: 0;
+        transform: scale(0.5);
+    }
+}
+
+/* 应用隐藏动画的CSS类 */
+.hide-animate {
+    animation: fadeOutAndScaleDown 0.5s ease-in-out;
+    animation-fill-mode: forwards; /* 保持动画结束状态 */
+}
+    </style>
+</head>
+<body>
+    <!-- header -->
+    <div class="header">
+        <div class="container">
+            <img src="Icon.png" style="width: 5%" />
+            <a href="#" class="logo" style="font-size: xx-large;">ChtrrrrrrrWriting <i class="fas fa-feather"></i></a>
+            <nav>
+                <a href="https://github.com/CTRTiger/CTRTiger.github.io" target="_blank" class="github-link"><i class="fab fa-github"></i> Visit on GitHub </a>&nbsp;&nbsp;&nbsp;&nbsp;
+                <a href="index.html"><i class="fas fa-home"></i> 首页</a>&nbsp;&nbsp;&nbsp;&nbsp;
+                <a href="https://ctrtiger.github.io"><i class="fas fa-mail-bulk"></i> 联系作者</a>
+                <!-- 更多导航链接 -->
+            </nav>
+        </div>
+    </div>
+    <!-- 文章卡片将放在这里 -->
+    <div class="main-content">
+      <!-- 文章们 -->
+           <!-- <div class="article-card" id="">
+              <div class="article-title"> <i class="fas fa-file-pdf"></i></div>
+              <div class="article-author"><i class="fas fa-at"></i>-<i class="fas fa-clock"></i></div>
+              <div id="article-content-" class="content" style="display: none;">
+                <div style="width: 96%;height: 60vh;">
+                  <object data="articles/.pdf" type="application/pdf" width=100% height=100%>
+                      <p>抱歉，您的浏览器不支持<i class="fas fa-file-pdf"></i>PDF预览，请自行下载PDF文件。</p>
+                  </object><hr>
+                </div>
+              </div>
+            <div class="article-actions">
+                <a href="#" class="read-more" data-article-id="">阅读全文 🔽</a>
+            </div>
+              <div class="article-actions">
+                  <button onclick="copyToClipboard('https://ctrtiger.github.io/NeoChtrrrrrrrWriting/index.html#')" ><i class="fas fa-share-alt"></i>分享</button>
+                  <button onclick="downloadButton('')"><i class="fas fa-file-download"></i>下载</button>
+              </div>
+            </div> 
+            <hr>
+            -->
+
+            <div class="article-card" id="1">
+              <div class="article-title"><i class="fas fa-thumbtack"></i>[置顶] ⟨<i class="fas fa-square-root-alt"> 数学</i>⟩ 空间直线与平面夹角在不同观测偏角的定量分析 <i class="fas fa-file-pdf"></i></div>
+              <div class="article-author"><i class="fas fa-at"></i>大西北最后的温柔-<i class="fas fa-clock"></i>2024.4.14</div>
+              <div id="article-content-1" class="content" style="display: none;">
+                <div style="width: 96%;height: 60vh;">
+                  <object data="articles/空间直线与平面夹角在不同观测偏角的定量分析.pdf" type="application/pdf" width=100% height=100%>
+                      <p>抱歉，您的浏览器不支持<i class="fas fa-file-pdf"></i>PDF预览，请自行下载PDF文件。</p>
+                  </object><hr>
+                </div>
+              </div>
+            <div class="article-actions">
+                <a class="read-more" data-article-id="1">阅读全文 🔽</a>
+            </div>
+              <div class="article-actions">
+                  <button onclick="copyToClipboard('https://ctrtiger.github.io/NeoChtrrrrrrrWriting/index.html#1')" ><i class="fas fa-share-alt"></i>分享</button>
+                  <button onclick="downloadButton('空间直线与平面夹角在不同观测偏角的定量分析')"><i class="fas fa-file-download"></i>下载</button>
+              </div>
+            </div>
+            <hr>
+
+            <div class="article-card" id="7">
+              <div class="article-title">⟨<i class="fas fa-square-root-alt"> 数学</i>⟩ 野猪数学及wsl化学理论与性质 <i class="fas fa-file-pdf"></i></div>
+              <div class="article-author"><i class="fas fa-at"></i>省二野猪及超自然现象研究所-<i class="fas fa-clock"></i>2024.4.15</div>
+              <div id="article-content-7" class="content" style="display: none;">
+                <div style="width: 96%;height: 60vh;">
+                  <object data="articles/野猪数学及wsl化学理论与性质.pdf" type="application/pdf" width=100% height=100%>
+                      <p>抱歉，您的浏览器不支持<i class="fas fa-file-pdf"></i>PDF预览，请自行下载PDF文件。</p>
+                  </object><hr>
+                </div>
+              </div>
+            <div class="article-actions">
+              <a class="read-more" data-article-id="7">阅读全文 🔽</a>
+            </div>
+              <div class="article-actions">
+                  <button onclick="copyToClipboard('https://ctrtiger.github.io/NeoChtrrrrrrrWriting/index.html#7')" ><i class="fas fa-share-alt"></i>分享</button>
+                  <button onclick="downloadButton('野猪数学及wsl化学理论与性质')"><i class="fas fa-file-download"></i>下载</button>
+              </div>
+            </div> 
+            <hr>
+            
+            <div class="article-card" id="6">
+              <div class="article-title">⟨<i class="fas fa-flask"> 化学</i>⟩ Wsl化学理论概论 <i class="fas fa-file-pdf"></i></div>
+              <div class="article-author"><i class="fas fa-at"></i>省二野猪及超自然现象研究所-<i class="fas fa-clock"></i>2024.4.15</div>
+              <div id="article-content-6" class="content" style="display: none;">
+                <div style="width: 96%;height: 60vh;">
+                  <object data="articles/Wsl化学理论概论.pdf" type="application/pdf" width=100% height=100%>
+                      <p>抱歉，您的浏览器不支持<i class="fas fa-file-pdf"></i>PDF预览，请自行下载PDF文件。</p>
+                  </object><hr>
+                </div>
+              </div>
+            <div class="article-actions">
+                <a href="#" class="read-more" data-article-id="6">阅读全文 🔽</a>
+            </div>
+              <div class="article-actions">
+                  <button onclick="copyToClipboard('https://ctrtiger.github.io/NeoChtrrrrrrrWriting/index.html#6')" ><i class="fas fa-share-alt"></i>分享</button>
+                  <button onclick="downloadButton('Wsl化学理论概论')"><i class="fas fa-file-download"></i>下载</button>
+              </div>
+            </div> 
+            <hr>
+            
+            <div class="article-card" id="5">
+              <div class="article-title">⟨<i class="fas fa-terminal"> 计算机</i>⟩ 基于C++EasyX库的图像卷积 <i class="fas fa-file-pdf"></i></div>
+              <div class="article-author"><i class="fas fa-at"></i>佚名-<i class="fas fa-clock"></i>2024.4.15</div>
+              <div id="article-content-5" class="content" style="display: none;">
+                <div style="width: 96%;height: 60vh;">
+                  <object data="articles/基于C++EasyX库的图像卷积.pdf" type="application/pdf" width=100% height=100%>
+                      <p>抱歉，您的浏览器不支持<i class="fas fa-file-pdf"></i>PDF预览，请自行下载PDF文件。</p>
+                  </object><hr>
+                </div>
+              </div>
+            <div class="article-actions">
+                <a class="read-more" data-article-id="5">阅读全文 🔽</a>
+            </div>
+              <div class="article-actions">
+                  <button onclick="copyToClipboard('https://ctrtiger.github.io/NeoChtrrrrrrrWriting/index.html#5')" ><i class="fas fa-share-alt"></i>分享</button>
+                  <button onclick="downloadButton('基于C++EasyX库的图像卷积')"><i class="fas fa-file-download"></i>下载</button>
+              </div>
+            </div> 
+            <hr>
+            
+            <div class="article-card" id="4">
+              <div class="article-title">⟨<i class="fas fa-square-root-alt"> 数学</i>⟩ 逆天的积化和差推导 <i class="fas fa-file-pdf"></i></div>
+              <div class="article-author"><i class="fas fa-at"></i>Chtrrrrrrr-<i class="fas fa-clock"></i>2024.4.15</div>
+              <div id="article-content-4" class="content" style="display: none;">
+                <div style="width: 96%;height: 60vh;">
+                  <object data="articles/逆天的积化和差推导.pdf" type="application/pdf" width=100% height=100%>
+                      <p>抱歉，您的浏览器不支持<i class="fas fa-file-pdf"></i>PDF预览，请自行下载PDF文件。</p>
+                  </object><hr>
+                </div>
+              </div>
+            <div class="article-actions">
+                <a class="read-more" data-article-id="4">阅读全文 🔽</a>
+            </div>
+              <div class="article-actions">
+                  <button onclick="copyToClipboard('https://ctrtiger.github.io/NeoChtrrrrrrrWriting/index.html#4')" ><i class="fas fa-share-alt"></i>分享</button>
+                  <button onclick="downloadButton('逆天的积化和差推导')"><i class="fas fa-file-download"></i>下载</button>
+              </div>
+            </div> 
+            <hr>
+            
+            <div class="article-card" id="3">
+              <div class="article-title">⟨<i class="fas fa-atom"> 物理</i>⟩ 失量物理：贰-实践 <i class="fas fa-file-pdf"></i></div>
+              <div class="article-author"><i class="fas fa-at"></i>Chtrrrrrrr-<i class="fas fa-clock"></i>2024.4.14</div>
+              <div id="article-content-3" class="content" style="display: none;">
+                <div style="width: 96%;height: 60vh;">
+                  <object data="articles/失量物理：贰-实践.pdf" type="application/pdf" width=100% height=100%>
+                      <p>抱歉，您的浏览器不支持<i class="fas fa-file-pdf"></i>PDF预览，请自行下载PDF文件。</p>
+                  </object><hr>
+                </div>
+              </div>
+            <div class="article-actions">
+                <a class="read-more" data-article-id="3">阅读全文 🔽</a>
+            </div>
+              <div class="article-actions">
+                  <button onclick="copyToClipboard('https://ctrtiger.github.io/NeoChtrrrrrrrWriting/index.html#3')" ><i class="fas fa-share-alt"></i>分享</button>
+                  <button onclick="downloadButton('失量物理：贰-实践')"><i class="fas fa-file-download"></i>下载</button>
+              </div>
+            </div> 
+            <hr>
+            
+            <div class="article-card" id="2">
+              <div class="article-title">⟨<i class="fas fa-atom"> 物理</i>⟩ 矢量物理：壹-定义 <i class="fas fa-file-pdf"></i></div>
+              <div class="article-author"><i class="fas fa-at"></i>Chtrrrrrrr-<i class="fas fa-clock"></i>2024.4.14</div>
+              <div id="article-content-2" class="content" style="display: none;">
+                <div style="width: 96%;height: 60vh;">
+                  <object data="articles/矢量物理：壹-定义.pdf" type="application/pdf" width=100% height=100%>
+                      <p>抱歉，您的浏览器不支持<i class="fas fa-file-pdf"></i>PDF预览，请自行下载PDF文件。</p>
+                  </object><hr>
+                </div>
+              </div>
+            <div class="article-actions">
+                <a class="read-more" data-article-id="2">阅读全文 🔽</a>
+            </div>
+              <div class="article-actions">
+                  <button onclick="copyToClipboard('https://ctrtiger.github.io/NeoChtrrrrrrrWriting/index.html#2')" ><i class="fas fa-share-alt"></i>分享</button>
+                  <button onclick="downloadButton('矢量物理：壹-定义')"><i class="fas fa-file-download"></i>下载</button>
+              </div>
+            </div> 
+            <hr>
+            
+
+    
+  </div>
+    <!-- 侧边栏内容 -->
+    <div class="sidebar">
+      <div class="sidebar-content">
+          <h3>ChtrrrrrrrWriting 你的<del>整活</del>论文网站</h3>
+          <p><i class="fas fa-bullhorn"></i> 新一代ChtrrrrrrrWriting强势归来！</p>
+          <p>我们优化了速度、美化了界面、精简了代码等等！</p>
+          <p>So，尽情的享受罢！（喜）</p>
+          <hr>
+          <h4><i class="fas fa-users"></i> 相关论文作者：</h4>
+          <p>大西北最后的温柔 <i class="fas fa-scroll"></i>1篇</p>
+          <p>Chtrrrrrrr <i class="fas fa-scroll"></i>3篇</p>
+          <p>省二野猪及超自然现象研究所 <i class="fas fa-scroll"></i>2篇</p>
+          <p>佚名 <i class="fas fa-scroll"></i>1篇</p>
+          <hr>
+          <p style="font-size: small;color:#666"><i class="fas fa-info-circle"></i> 版权归@Chtrrrrrrr™的所有</p>
+          <p style="font-size: small;color:#666"><i class="fab fa-github-square"></i> 由GithubPages<del>《</del>强力<del>》</del>驱动</p>
+          <!-- 更多侧边栏内容 -->
+      </div>
+    </div>
+  <button class="back-to-top" onclick="scrollToTop()"><i class="fas fa-chevron-circle-up"></i></button>
+  <script>
+      // 等待页面加载完成 这是阅读全文
+      document.addEventListener('DOMContentLoaded', function() {
+          // 获取所有的 '.read-more' 元素
+          var readMoreButtons = document.querySelectorAll('.read-more');
+
+          // 为每个 '.read-more' 元素添加点击事件监听器
+          readMoreButtons.forEach(function(button) {
+              button.addEventListener('click', function() {
+                  // 获取当前点击的按钮对应的文章卡片ID
+                  var articleCardId = this.getAttribute('data-article-id');
+                  var content = document.getElementById('article-content-' + articleCardId);
+                  
+                  if (content.style.display === 'none') {
+                      content.style.display = 'block';
+                      this.textContent = '收起 🔼';
+                  } else {
+                      content.style.display = 'none';
+                      this.textContent = '阅读全文 🔽';
+                  }
+              });
+          });
+      });
+      //复制
+      function copyToClipboard(text) {
+        navigator.clipboard.writeText(text).then(function() {
+          alert('链接已复制到剪贴板！');
+        }, function(err) {
+          alert('无法复制链接: ' + err);
+        });
+      }
+      //下载
+      function downloadButton(pdfname) {
+        // 弹出输入框让用户输入文件名，初始文本为"myFile"
+        var filename = prompt('请输入文件名（不包括扩展名，如：论文1）:', pdfname);
+
+        // 检查用户是否取消了输入框或没有输入内容
+        if (filename) {
+          // 创建一个临时的链接元素
+          var tempLink = document.createElement('a');
+          tempLink.href = '/articles/'+pdfname+'.pdf'; // 这里替换为文件的实际路径
+          tempLink.download = filename+'_ChtrWriting.pdf'; // 设置下载的文件名
+
+          // 将链接添加到文档中并触发点击事件
+          document.body.appendChild(tempLink);
+          tempLink.click();
+
+          // 然后从文档中移除链接
+          document.body.removeChild(tempLink);
+        }
+      };
+      // 等待页面加载完成 这是返回顶部
+      document.addEventListener('DOMContentLoaded', function() {
+          // 获取按钮元素
+          var backToTopButton = document.querySelector('.back-to-top');
+          var scrollToBottomButton = document.querySelector('.scroll-to-bottom');
+
+          // 监听滚动事件
+          window.addEventListener('scroll', function() {
+              var scrollFromTop = window.pageYOffset || document.documentElement.scrollTop;
+
+              // 显示“返回顶部”按钮
+              if (scrollFromTop > 100) {
+                  if (backToTopButton.classList.contains('hide-animate')) {
+                      backToTopButton.classList.remove('hide-animate');
+                  }
+                  backToTopButton.style.display = 'block';
+              } else {
+                  // 隐藏“返回顶部”按钮，并添加隐藏动画类
+                  backToTopButton.classList.add('hide-animate');
+              }
+          });
+
+          // 隐藏动画完成后，隐藏按钮
+          backToTopButton.addEventListener('animationend', function() {
+              if (this.classList.contains('hide-animate')) {
+                  this.style.display = 'none';
+              }
+          });
+      });
+      // 滚动到顶部
+      function scrollToTop() {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+  </script>
+</body>
+</html>
