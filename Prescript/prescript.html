@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>DEVICE:</title>
+  <meta name="description" content="For it is the will of the city.">
+  <meta name="keywords" content="HTML, CSS, JavaScript">
+  <meta name="author" content="Will of the City">
+
+  <style>
+    @font-face {
+      font-family: 'pixelmplus12regular';
+      src: url('pixelmplus12-regular-webfont.woff2') format('woff2'),
+           url('pixelmplus12-regular-webfont.woff') format('woff');
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    html, body { margin: 0; height: 100%; overflow: hidden; }
+
+    body {
+      background-image: url("black.png");
+      background-color: black;
+    }
+
+    #fade {
+      position: absolute;
+      top: 25%;
+      left: 50%;
+      transform: translate(-50%, 10%);
+      font-family: pixelmplus12regular;
+      font-size: 23px;
+      color: #FFFFFF;
+      animation-iteration-count: 1;
+      animation-name: fade;
+      animation-duration: 7s;
+      text-align: center;
+    }
+
+	.glow {
+		font-size: 80px;
+		color: #fff;
+		text-align: center;
+		text-shadow: 0 0 0.2px #fff,  0 0 12px #4269b8,  0 0 50px #4269b8;
+	}
+
+    .prescript.idle {
+      cursor: pointer;
+      opacity: 1;
+    }
+    .prescript.idle:hover {
+      opacity: 1;
+    }
+	.prescript.revealed {
+	  cursor: default;
+	  opacity: 1;
+	}
+    @keyframes fade {
+      0%   { opacity: 1; }
+      1%   { opacity: 0; }
+      100% { opacity: 1; }
+    }
+  </style>
+
+  <script src="https://cdn.jsdelivr.net/npm/howler@2.2.4/dist/howler.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+</head>
+
+<body>
+  <div class="glow"> <div id="fade">
+    <img
+      style="display:block;margin:0 auto;width:219px;height:260px;position:relative;"
+      src="index_new.png"
+      alt=""
+    />
+
+    <div id="prescript" class="prescript idle">- Click to Receive -</div>
+
+    <script src="prescript-zh_cn.js"></script>
+  </div>
+    </div>
+</body>
+</html>
+
+
+
