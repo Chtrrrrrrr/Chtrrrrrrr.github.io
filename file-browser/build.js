@@ -1,24 +1,22 @@
 const fs = require('fs');
 const path = require('path');
 
-// ==================== 配置 ====================
-
+// 从命令行参数获取输出目录，默认为 ../fb
+const outputDirArg = process.argv[2] || '../fb';
 const CONFIG = {
-  // 从 file-browser 的上级目录（即 main/）开始扫描
+  // 扫描上级目录（main 分支根目录）
   sourceDir: path.join(__dirname, '..'),
   
-  // 输出到 file-browser/dist/
-  outputDir: path.join(__dirname, 'dist'),
+  // 输出目录（可配置）
+  outputDir: path.resolve(__dirname, outputDirArg),
   
-  // 忽略列表（增加 file-browser 自身，避免循环）
   ignore: [
-    '.git',
-    '.github',
+    '.git', 
+    '.github', 
     'node_modules',
-    '.DS_Store',
+    '.DS_Store', 
     'Thumbs.db',
-    'dist',
-    'file-browser'  // ← 跳过自己！
+    'file-browser'  // 跳过自己
   ],
   
   maxDepth: 10,
@@ -86,13 +84,15 @@ function scanDirectory(dirPath, relativePath = '', depth = 0) {
   }
 
   const name = path.basename(dirPath);
-  const id = relativePath ? relativePath.replace(/[\/\\]/g, '-').replace(/[^a-zA-Z0-9-]/g, '_') : 'root';
+  const id = relativePath 
+    ? relativePath.replace(/[\/\\]/g, '-').replace(/[^a-zA-Z0-9-]/g, '_')
+    : 'root';
   
   const node = {
     id,
     name,
     type: stats.isDirectory() ? 'folder' : 'file',
-    ...getStats(stats)
+    ...getFileStats(stats)
   };
 
   if (stats.isDirectory()) {
@@ -119,7 +119,7 @@ function scanDirectory(dirPath, relativePath = '', depth = 0) {
       });
       
       node.totalSize = formatSize(
-        node.children.reduce((sum, child) => sum + (child.sizeBytes || 0), 0)
+        node.children.reduce((sum, c) => sum + (c.sizeBytes || 0), 0)
       );
       
     } catch (err) {
@@ -130,10 +130,11 @@ function scanDirectory(dirPath, relativePath = '', depth = 0) {
     node.extension = ext;
     node.fileType = getFileType(ext);
     
-    // 路径计算：files/相对于dist的位置
-    const webPath = 'files/' + relativePath.replace(/\\/g, '/');
-    node.openUrl = './' + webPath;
-    node.downloadUrl = './' + webPath;
+    // 关键：路径相对于 fb/index.html
+    // fb/ 里的文件要访问 ../文件名
+    const webPath = relativePath.replace(/\\/g, '/');
+    node.openUrl = `../${webPath}`;
+    node.downloadUrl = `../${webPath}`;
   }
 
   return node;
@@ -145,7 +146,6 @@ function ensureDir(dir) {
 
 function copyRecursive(src, dest) {
   const stats = fs.statSync(src);
-  
   if (stats.isDirectory()) {
     ensureDir(dest);
     fs.readdirSync(src).forEach(entry => {
@@ -158,22 +158,20 @@ function copyRecursive(src, dest) {
 }
 
 function build() {
-  console.log('🔨 Building...\n');
-  
-  const sourceFullPath = path.resolve(CONFIG.sourceDir);
-  console.log(`📁 Source: ${sourceFullPath}`);
-  
+  console.log('🔨 Building file browser...\n');
+  console.log(`📁 Source: ${path.resolve(CONFIG.sourceDir)}`);
+  console.log(`📦 Output: ${path.resolve(CONFIG.outputDir)}\n`);
+
   // 清理
   if (fs.existsSync(CONFIG.outputDir)) {
     fs.rmSync(CONFIG.outputDir, { recursive: true });
   }
-  ensureDir(CONFIG.outputDir);
 
   // 扫描
   console.log('🔍 Scanning...');
-  const rootNode = scanDirectory(sourceFullPath, '');
-  rootNode.name = path.basename(sourceFullPath);
-  
+  const rootNode = scanDirectory(CONFIG.sourceDir, '');
+  rootNode.name = 'root';
+
   let fileCount = 0, folderCount = 0;
   function count(n) {
     if (n.type === 'folder') { folderCount++; n.children?.forEach(count); }
@@ -182,38 +180,27 @@ function build() {
   count(rootNode);
   console.log(`✅ Found: ${folderCount} folders, ${fileCount} files\n`);
 
+  // 创建目录
+  ensureDir(CONFIG.outputDir);
+
   // 保存 JSON
-  const jsonPath = path.join(CONFIG.outputDir, 'data', 'filesystem.json');
+  const jsonPath = path.join(CONFIG.outputDir, 'fb', 'data', 'filesystem.json');
   ensureDir(path.dirname(jsonPath));
   fs.writeFileSync(jsonPath, JSON.stringify(rootNode, null, 2));
   console.log(`💾 JSON: ${jsonPath}`);
 
-  // 复制源文件
-  console.log('\n📦 Copying files...');
-  const filesDest = path.join(CONFIG.outputDir, 'files');
-  ensureDir(filesDest);
-  
-  fs.readdirSync(sourceFullPath).forEach(entry => {
-    if (shouldIgnore(entry)) return;
-    const src = path.join(sourceFullPath, entry);
-    const dest = path.join(filesDest, entry);
-    if (src !== __dirname) {
-      copyRecursive(src, dest);
-      console.log(`   ✅ ${entry}`);
-    }
-  });
-
-  // 复制前端
+  // 复制前端代码到 fb/
   const srcDir = path.join(__dirname, 'src');
+  const fbDir = path.join(CONFIG.outputDir, 'fb');
   if (fs.existsSync(srcDir)) {
-    console.log('\n📄 Copying frontend...');
-    copyRecursive(srcDir, CONFIG.outputDir);
+    copyRecursive(srcDir, fbDir);
+    console.log(`📄 Frontend: ${fbDir}`);
   }
 
-  // 禁用 Jekyll
-  fs.writeFileSync(path.join(CONFIG.outputDir, '.nojekyll'), '');
+  // .nojekyll
+  fs.writeFileSync(path.join(fbDir, '.nojekyll'), '');
   
-  console.log('\n✨ Done! Run: npx serve dist');
+  console.log('\n✨ Done!');
 }
 
 build();

@@ -1,32 +1,54 @@
-name: Deploy File Browser
+name: Deploy to gh-pages
 
 on:
   push:
-    branches: [main, master]
+    branches: [main]
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     
     steps:
-      - name: Checkout
+      - name: Checkout main
         uses: actions/checkout@v4
+        with:
+          ref: main
+          path: main-src    # 检出到子目录，避免冲突
       
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: '20'
       
-      - name: Build
-        working-directory: ./file-browser    # 在子目录运行
+      - name: Build file browser
+        working-directory: ./main-src/file-browser
         run: |
           npm install
-          node build.js
+          # 修改：输出到 gh-pages 的根目录下的 fb/
+          node build.js ../gh-pages-output
       
-      - name: Deploy
+      - name: Prepare gh-pages output
+        run: |
+          # 创建输出目录结构
+          mkdir -p gh-pages-output
+          
+          # 1. 复制 main 的所有文件（源码 + 你的文件）
+          cp -r main-src/* gh-pages-output/ 2>/dev/null || true
+          cp -r main-src/.* gh-pages-output/ 2>/dev/null || true
+          
+          # 2. 移除不需要的（源码目录）
+          rm -rf gh-pages-output/file-browser
+          rm -rf gh-pages-output/.git
+          
+          # 3. fb/ 已经由 build.js 生成在 gh-pages-output/fb/
+          #    并且 filesystem.json 已经指向 ../文件名
+      
+      - name: Deploy to gh-pages branch
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./file-browser/dist    # 部署这个目录
-          force_orphan: true
+          publish_dir: ./gh-pages-output
+          force_orphan: true    # 干净的 gh-pages 分支
