@@ -1,0 +1,22 @@
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: #1e293b; }
+::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
+
+.file-row { transition: all 0.1s; }
+.file-row:hover { background-color: #1e293b; }
+.file-row.selected { background-color: #1e293b; border-left: 2px solid #3b82f6; }
+
+@keyframes fadeIn { 
+    from { opacity: 0; transform: translateY(5px); } 
+    to { opacity: 1; transform: translateY(0); } 
+}
+.animate-fade-in { animation: fadeIn 0.2s ease-out forwards; }
+
+.delay-1 { animation-delay: 0.03s; }
+.delay-2 { animation-delay: 0.06s; }
+.delay-3 { animation-delay: 0.09s; }
+.delay-4 { animation-delay: 0.12s; }
+.delay-5 { animation-delay: 0.15s; }
+.delay-6 { animation-delay: 0.18s; }
+.delay-7 { animation-delay: 0.21s; }
+.delay-8 { animation-delay: 0.24s; }
