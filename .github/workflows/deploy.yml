@@ -16,7 +16,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: main
-          path: main-src    # 检出到子目录，避免冲突
       
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -24,31 +23,31 @@ jobs:
           node-version: '20'
       
       - name: Build file browser
-        working-directory: ./main-src/file-browser
+        working-directory: ./file-browser
         run: |
           npm install
-          # 修改：输出到 gh-pages 的根目录下的 fb/
-          node build.js ../gh-pages-output
+          node build.js ./gh-pages-temp    # 生成到临时目录
       
-      - name: Prepare gh-pages output
+      - name: Prepare gh-pages
         run: |
-          # 创建输出目录结构
-          mkdir -p gh-pages-output
+          mkdir -p gh-pages
           
-          # 1. 复制 main 的所有文件（源码 + 你的文件）
-          cp -r main-src/* gh-pages-output/ 2>/dev/null || true
-          cp -r main-src/.* gh-pages-output/ 2>/dev/null || true
+          # 1. 复制 main 的所有文件（你的源码和文件）
+          cp -r main/* gh-pages/ 2>/dev/null || true
+          cp -r main/.* gh-pages/ 2>/dev/null || true
           
-          # 2. 移除不需要的（源码目录）
-          rm -rf gh-pages-output/file-browser
-          rm -rf gh-pages-output/.git
+          # 2. 删除不需要的
+          rm -rf gh-pages/file-browser
+          rm -rf gh-pages/.git
+          rm -rf gh-pages/gh-pages-temp
           
-          # 3. fb/ 已经由 build.js 生成在 gh-pages-output/fb/
-          #    并且 filesystem.json 已经指向 ../文件名
+          # 3. 移动 fb/ 到根目录
+          mv gh-pages-temp/fb gh-pages/
+          rm -rf gh-pages-temp
       
-      - name: Deploy to gh-pages branch
+      - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./gh-pages-output
-          force_orphan: true    # 干净的 gh-pages 分支
+          publish_dir: ./gh-pages
+          force_orphan: true
