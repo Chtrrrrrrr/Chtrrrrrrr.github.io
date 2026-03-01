@@ -1,0 +1,12 @@
+{
+  "name": "file-browser",
+  "version": "1.0.0",
+  "description": "Static file browser for GitHub Pages",
+  "scripts": {
+    "build": "node build.js",
+    "dev": "npm run build && npx serve dist"
+  },
+  "devDependencies": {
+    "gh-pages": "^6.1.1"
+  }
+}
