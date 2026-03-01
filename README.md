@@ -7,5 +7,4 @@ The webiste can be departed into three sections:
 - Understanding Prescript: it is translated from [NYOS](https://github.com/NYOS-cat/NYOS). You can found relevant files in ./Prescript
 - ~~Neo Chtrrrrrrr Writing: a simple web storing some entertaining papers just for play~~
 - ~~Muffin Server Web:emmmm, this is a private minecraft server page for my friends.Don't worry, it has been shut down for a long time.~~
----
-It will be a permanent puzzle for me if you realy find this repository by yourself😂.Rather than looking at my project,why not turn to Dmego's?
+
