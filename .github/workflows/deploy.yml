@@ -2,7 +2,7 @@ name: Deploy File Browser
 
 on:
   push:
-    branches: [main]  # 或 master，看你的默认分支
+    branches: [main, master]
   workflow_dispatch:
 
 jobs:
@@ -19,14 +19,14 @@ jobs:
           node-version: '20'
       
       - name: Build
+        working-directory: ./file-browser    # 在子目录运行
         run: |
-          cd file-browser           # 进入子目录
-          npm install               # 安装依赖
-          node build.js             # 运行构建（扫描上级目录 main/）
+          npm install
+          node build.js
       
-      - name: Deploy to GitHub Pages
+      - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./file-browser/dist   # 部署 dist 目录
-          force_orphan: true        # 只保留最新提交，干净
+          publish_dir: ./file-browser/dist    # 部署这个目录
+          force_orphan: true
