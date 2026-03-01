@@ -26,24 +26,23 @@ jobs:
         working-directory: ./file-browser
         run: |
           npm install
-          node build.js ./gh-pages-temp    # 生成到临时目录
+          node build.js ./gh-pages-temp    # 生成到 file-browser/gh-pages-temp/
       
       - name: Prepare gh-pages
         run: |
           mkdir -p gh-pages
           
-          # 1. 复制 main 的所有文件（你的源码和文件）
+          # 1. 复制 main 的所有文件
           cp -r main/* gh-pages/ 2>/dev/null || true
           cp -r main/.* gh-pages/ 2>/dev/null || true
           
           # 2. 删除不需要的
           rm -rf gh-pages/file-browser
           rm -rf gh-pages/.git
-          rm -rf gh-pages/gh-pages-temp
           
-          # 3. 移动 fb/ 到根目录
-          mv gh-pages-temp/fb gh-pages/
-          rm -rf gh-pages-temp
+          # 3. 🔥 修正：从 file-browser/ 目录移动 fb/
+          mv main/file-browser/gh-pages-temp/fb gh-pages/
+          rm -rf main/file-browser/gh-pages-temp
       
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
