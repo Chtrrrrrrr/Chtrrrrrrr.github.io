@@ -7,13 +7,11 @@
 ![Last Commit](https://img.shields.io/github/last-commit/Chtrrrrrrr/Chtrrrrrrr.github.io?logo=github)
 ![Repo Size](https://img.shields.io/github/repo-size/Chtrrrrrrr/Chtrrrrrrr.github.io)
 ![Stars](https://img.shields.io/github/stars/Chtrrrrrrr/Chtrrrrrrr.github.io?style=social)
-## Sections
+## Functions
 The website is divided into these sections:
-- **Main Page**: modified from [Dmego's personal homepage](https://github.com/dmego/home.github.io).
-- **Understanding Prescript**: translated from [NYOS](https://github.com/NYOS-cat/NYOS). Relevant files are in `./Prescript`.
+- **Main Page**: modified from [Dmego's homepage](https://github.com/dmego/home.github.io).
+- **Understanding Prescript**: translated from [NYOS](https://github.com/NYOS-cat/NYOS) put in `./Prescript`.
 - **File Browser**: modified from my repo [File Browser](https://github.com/Chtrrrrrrr/File-Browser).
-- ~~**Neo Chtrrrrrrr Writing**: a simple web page storing some entertaining papers, just for fun.~~
-- ~~**Muffin Server Web**: a private Minecraft server page for my friends, which has been shut down for a long time.~~
 ## Directory Structure
 ```
 .
@@ -32,7 +30,7 @@ The website is divided into these sections:
 └── LICENSE
 ```
 ## Github Page Deployment
-GitHub Actions will deploys the site to `gh-pages` branch automatically if there is any push to `main`. Meanwhile, it will scan the whole directory for index of File Browser.
+GitHub Actions will deploys the site to `gh-pages` branch automatically while create an index of whole directory for File Browser. Then GitHub Pages will use `gp-pages` rather than `main`.
 ## Local Deployment
 You can run this static site locally with Node.js or python:
 ```bash
