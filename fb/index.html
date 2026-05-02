@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chtrrrrrrr File Browser</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" href="assets/img/logo3.png">
+</head>
+<body class="bg-slate-950 text-slate-300 font-sans h-screen w-screen overflow-hidden flex flex-col select-none">
+
+    <!-- 标题栏 -->
+    <header class="h-10 bg-slate-900 border-b border-slate-800 flex items-center justify-between px-4 shrink-0">
+        <!-- 左侧：图标和标题 -->
+        <div class="flex items-center gap-2">
+            <i class="ph ph-terminal-window text-slate-400 text-lg"></i>
+            <span class="text-sm font-medium text-slate-200">File Browser</span>
+        </div>
+        
+        <!-- 右侧：名称 -->
+        <div class="flex items-center gap-2 text-sm text-slate-400">
+            <span>@Chtrrrrrrr</span>
+            <span>|</span>
+            <span>Private</span>
+        </div>
+    </header>
+    <!-- 工具栏 -->
+    <div class="h-12 bg-slate-900/50 border-b border-slate-800 flex items-center px-3 gap-2 shrink-0">
+        <div class="flex items-center gap-1 text-slate-400">
+            <button id="btn-back" class="p-1.5 hover:bg-slate-800 rounded disabled:opacity-30" title="Alt+←">
+                <i class="ph ph-caret-left text-lg"></i>
+            </button>
+            <button id="btn-forward" class="p-1.5 hover:bg-slate-800 rounded disabled:opacity-30" title="Alt+→">
+                <i class="ph ph-caret-right text-lg"></i>
+            </button>
+            <button id="btn-up" class="p-1.5 hover:bg-slate-800 rounded disabled:opacity-30" title="Alt+↑">
+                <i class="ph ph-arrow-up text-lg"></i>
+            </button>
+            <button onclick="location.reload()" class="p-1.5 hover:bg-slate-800 rounded">
+                <i class="ph ph-arrow-clockwise text-lg"></i>
+            </button>
+        </div>
+
+        <div class="flex-1 mx-2">
+            <div class="bg-slate-950 border border-slate-800 rounded-md h-8 flex items-center px-3 text-sm text-slate-400 focus-within:border-slate-600 transition-all">
+                <i class="ph ph-magnifying-glass mr-2"></i>
+                <input type="text" id="search-input" placeholder="搜索..." class="bg-transparent border-none outline-none w-full text-slate-200 placeholder-slate-600 h-full">
+            </div>
+        </div>
+
+        <div class="flex items-center gap-1 text-slate-400 pr-2">
+            <button onclick="app.createFolder()" class="p-1.5 hover:bg-slate-800 rounded hover:text-green-400" title="新建文件夹">
+                <i class="ph ph-plus text-lg"></i>
+            </button>
+            <button onclick="app.rename()" class="p-1.5 hover:bg-slate-800 rounded hover:text-blue-400" title="F2 重命名">
+                <i class="ph ph-pencil-simple text-lg"></i>
+            </button>
+            <button onclick="app.delete()" class="p-1.5 hover:bg-slate-800 rounded hover:text-red-400" title="Delete 删除">
+                <i class="ph ph-trash text-lg"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- 主体 -->
+    <div class="flex-1 flex overflow-hidden">
+        
+        <!-- 文件列表 -->
+        <div class="flex-1 flex flex-col min-w-0 bg-[#0f172a]">
+            
+            <!-- 表头 -->
+            <div class="h-9 bg-slate-900 border-b border-slate-800 flex items-center px-4 text-xs font-medium text-slate-500 select-none">
+                <div class="w-8"></div>
+                <div class="flex-1 pl-2">名称</div>
+                <div class="w-32 text-right">大小</div>
+                <div class="w-40 text-right">修改时间</div>
+                <div class="w-20 text-center">操作</div>
+            </div>
+
+            <!-- 列表内容 -->
+            <div id="file-list" class="flex-1 overflow-y-auto"></div>
+
+            <!-- 状态栏 -->
+            <div class="h-8 bg-slate-900 border-t border-slate-800 flex items-center justify-between px-3 text-xs text-slate-500 select-none shrink-0">
+                <div class="flex items-center gap-4">
+                    <span id="current-path">/</span>
+                    <span id="folder-count">0 文件夹</span>
+                    <span id="file-count">0 文件</span>
+                </div>
+                <div id="clock" class="font-mono text-slate-300">00:00:00</div>
+            </div>
+        </div>
+
+        <!-- 预览面板 -->
+        <div class="w-80 bg-[#0b1120] border-l border-slate-800 flex flex-col items-center justify-center shrink-0 relative">
+            <div class="absolute inset-0 opacity-10 pointer-events-none" 
+                 style="background-image: linear-gradient(#334155 1px, transparent 1px), linear-gradient(90deg, #334155 1px, transparent 1px); background-size: 20px 20px;">
+            </div>
+            <div id="preview-panel" class="z-10 flex flex-col items-center text-slate-500 p-6 text-center w-full">
+                <!-- 动态内容 -->
+            </div>
+        </div>
+
+    </div>
+
+    <!-- 快捷键提示 -->
+    <div class="h-7 bg-slate-900 border-t border-slate-800 flex items-center justify-between text-[11px] text-slate-600 select-none shrink-0 px-4">
+        <!-- 左侧快捷键组 -->
+        <div class="flex items-center gap-4">
+            <span>Alt+← 后退</span>
+            <span>|</span>
+            <span>Alt+→ 前进</span>
+            <span>|</span>
+            <span>Alt+↑ 上级</span>
+            <span>|</span>
+            <span>Esc 取消选择</span>
+        </div>
+        <!-- 右侧版权信息 -->
+        <span>
+            Powered By 
+            <a href="https://github.com/features/actions" target="_blank">GitHub Actions</a> And 
+            <a href="https://github.com" target="_blank">Github Pages</a>
+            Code From
+            <a href="https://github.com/Chtrrrrrrr/FileBrowser" target="_blank">Online File Browser</a>
+        </span>
+    </div>
+    
+
+    <script src="js/utils.js"></script>
+    <script src="js/fileSystem.js"></script>
+    <script src="js/renderer.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
