@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.0.0.min.js"></script>
+    <title>松饼群MC服务器！</title>
+    <link rel="icon" href="ico.ico">
+    <link rel="stylesheet" href="ui.css">
+    <script type="text/javascript">
+        var jq = jQuery;
+        $.ajax({
+            type:'get',
+            url:"https://api.miri.site/mcPlayer/get.php?ip=play.simpfun.cn&port=30859",
+            success:function(body,heads,status){
+                var max = body.max;
+                var online = body.online;
+                var sample = body.sample;
+                
+                var players = "";
+                for(i = 0,len=sample.length; i < len; i++) {
+                    players = players + sample[i].name + "，";
+                }
+                
+        
+                $("#online").text(online);
+                $("#max").text(max);
+                $("#players").text(players);
+        
+            }
+        })
+    </script>
+    <style type="text/css">
+            .background-container {
+        background-size: cover;
+        background-position: center;
+        height: 100vh;
+        width: 100vw;
+        transition: background-image 1s ease-in-out; /* 背景图片切换时的过渡效果 */
+        }
+    </style>
+    <script type="text/javascript">
+       document.addEventListener('DOMContentLoaded', function() {
+  const backgrounds = [
+    'background1.png',
+    'background2.png',
+    'background3.png'
+  ];
+
+  let currentBackground = 0;
+
+  function changeBackground() {
+    const backgroundContainer = document.querySelector('.background-container');
+    backgroundContainer.style.backgroundImage = `url('${backgrounds[currentBackground]}')`;
+    currentBackground = (currentBackground + 1) % backgrounds.length;
+  }
+
+  setInterval(changeBackground, 3000); // 每5秒更换一次背景图片
+  changeBackground(); // 初始化背景图片
+});
+      </script>
+</head>
+<body>
+    <div class="background-container"></div>
+    <div class="content">
+        <img src="ico.png" style="width: auto;height: auto">
+        <h1 style=" background-image: linear-gradient(90deg,#5d00ff 0,#2575fc);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;">松饼们的Minecraft服务器！</h1>
+        <h3 style=" background-image: linear-gradient(90deg,#2575fc 0,#5d00ff);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;">1.16.5生存服务器🖥 内置语音系统🎙️ 感谢赵晨宇的赞助</h3>
+        <div class="copy-to-clipboard"> 
+            <h3 style="background-image: linear-gradient(90deg,#e100ff 0,#9b25fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;">服务器地址</h3>
+            <input style="width: 200px; color:#8225fc" type="text" id="mc-link" value="http://minecraft.22web.org" readonly>
+            <button class="button-7" role="button" onclick="copyToClipboard()" style="height: 30px; text-align: center;line-height: 15px" >复制</button>
+        </div>
+        <div class="button-group">
+            <button class="button-7" role="button" onclick="window.location.href='https://www.lanzou.com'">下载Mods(百度网盘)</button>
+            <button class="button-7" role="button">下载Mods(本站)</button>
+            <button class="button-7" role="button" onclick="window.location.href='teach.html'">MC相关配置及Mod安装教程</button>
+            <button class="button-7" role="button" onclick="window.location.href='ModList.html'">包含模组列表</button>
+        </div>
+        服务器状态：<p style="text-align: center;color: red;">离线🔴 待中考后开服</p>
+        <div  style=" background-image: linear-gradient(90deg,#5d00ff 0,#2575fc);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;">
+        在线人数：<span id="online">online</span>/<span id="max">max</span>
+        <br>
+        在线列表：<br>
+        </div>
+        <span id="players">players</span>
+    </div>
+    <div class="footer" style="color: black; bottom: 5px; font-size:15px">
+        由<a href="https://www.rhymc.com/">旋律云</a>、<a href="http://byethost.com">Byethost</a>强力驱动
+    </div>
+    <script src="javascript.js"></script>
+</body>
+</html>
