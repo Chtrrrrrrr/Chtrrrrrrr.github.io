@@ -1,7 +1,6 @@
 # Chtrrrrrrr.github.io
 [![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Active-brightgreen?logo=github)](https://Chtrrrrrrr.github.io)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-![Last Commit](https://img.shields.io/github/last-commit/Chtrrrrrrr/Chtrrrrrrr.github.io?logo=github)
 ![Repo Size](https://img.shields.io/github/repo-size/Chtrrrrrrr/Chtrrrrrrr.github.io)
 ![Stars](https://img.shields.io/github/stars/Chtrrrrrrr/Chtrrrrrrr.github.io?style=social)
 
